@@ -10,7 +10,12 @@ def RunScript(self):
     
     self.Print('1: ', self.PASS)
     self.Print('2: ', self.PASS)
-    self.Print('3: ', self.PASS)
+
+    self.Print('Wait for user')
+    self.Prompt()
+    self.Print('User repsonded')
+
+    self.Print(': ', self.PASS)
     self.Print('4: ', self.PASS)
 
 
