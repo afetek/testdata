@@ -16,7 +16,9 @@ def RunScript(self):
     d2 = 'self.model.d2'
     d3 = 'self.model.d3'
     
+    self.Print("Wait For User Response")
     yield self.Prompt()
+    self.Print("User Responded")
 
     self.Assignment(model_var = c1, value = 2)
     self.Assignment(model_var = c2, value = 2)
