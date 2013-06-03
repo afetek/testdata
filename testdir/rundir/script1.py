@@ -18,7 +18,7 @@ def RunScript(self):
     
     self.Print("Waitng ...")
     yield self.Prompt()
-    self.Print("... Ok"
+    self.Print("... Ok")
 
     self.Assignment(model_var = c1, value = 2)
     self.Assignment(model_var = c1, value = 2)
