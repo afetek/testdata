@@ -16,6 +16,8 @@ def RunScript(self):
     d2 = 'self.model.d2'
     d3 = 'self.model.d3'
     
+    yield self.Prompt()
+
     self.Assignment(model_var = c1, value = 2)
     self.Assignment(model_var = c2, value = 2)
     self.Assignment(model_var = c3, value = 3)
@@ -24,3 +26,4 @@ def RunScript(self):
                              self.Validation(model_var = d2, hi = 6.0, lo = 4.0, timeout = 1000, duration = 0, pass_criteria = 'EQUAL', description = 'set c2'),
                              self.Validation(model_var = d3, hi = 6.0, lo = 4.0, timeout = 1000, duration = 0, pass_criteria = 'EQUAL', description = 'set c3'))
 
+    yield self.Prompt()
