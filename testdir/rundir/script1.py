@@ -16,17 +16,16 @@ def RunScript(self):
     d2 = 'self.model.d2'
     d3 = 'self.model.d3'
     
-    self.Print("Wait ...")
+    self.Print("Waitng ...")
     yield self.Prompt()
-    self.Print("... Responded")
+    self.Print("... Ok"
 
     self.Assignment(model_var = c1, value = 2)
-    self.Assignment(model_var = c2, value = 2)
+    self.Assignment(model_var = c1, value = 2)
     self.Assignment(model_var = c3, value = 3)
     
     yield scheduler.Parallel(self.Validation(model_var = d1, hi = 6.0, lo = 4.0, timeout = 1000, duration = 0, pass_criteria = 'EQUAL', description = 'set c1'),
                              self.Validation(model_var = d2, hi = 6.0, lo = 4.0, timeout = 1000, duration = 0, pass_criteria = 'EQUAL', description = 'set c2'),
                              self.Validation(model_var = d3, hi = 6.0, lo = 4.0, timeout = 1000, duration = 0, pass_criteria = 'EQUAL', description = 'set c3'))
 
-    self.Print("Test script1 Finished")
     yield self.Prompt()
