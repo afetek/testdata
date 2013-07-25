@@ -10,110 +10,94 @@ def RunScript(self):
     self.Print("Powerup Test Script")
     self.Print("Testing Requirements: Statrup Mode - 5 through 8")
 
-    print str(type(self.fan1_fault))
-    print str(type(self.fan2_fault))
-
-    if self.fan1_fault:
-        self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1)
-    if self.fan2_fault:
-        self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1)
-    
+    self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1 if self.fan1_fault else 0)
+    self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1 if self.fan2_fault else 0)
     self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
-    if self.TEST_RUN == 'r1':
-        yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan1_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'fan 1 should power on'),
-            self.Validation(model_var = 'self.model.fan2_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'NOT_EQUAL', 
-                            description = 'fan 2 should not power on'),
-            self.Validation(model_var = 'self.model.eicas', 
-                            hi = 3, 
-                            lo = 3, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'Both fans are Available EICAS message'))
+    if not self.fan1_fault and not self.fan2_fault:
+        f1_pass    = 'EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 3
+        e_hi       = 3
+        e_msg      = 'both fans are available'
+        assign_var = 'self.model.fan1_power_status'
 
-    if self.TEST_RUN == 'r2':
-        yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan2_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'fan 2 should power on'),
-            self.Validation(model_var = 'self.model.fan1_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'NOT_EQUAL', 
-                            description = 'fan 1 should not power on'),
-            self.Validation(model_var = 'self.model.eicas', 
-                            hi = 2, 
-                            lo = 2, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'Fan 2 is available EICAS message'))
+    elif self.fan1_fault and not self.fan2_fault:
+        f1_pass    = 'NOT_EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should not power on'
+        f2_pass    = 'EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 3
+        e_hi       = 3
+        e_msg      = 'only fan 2 is available'
+        assign_var = 'self.model.fan2_power_status'
 
-    if self.TEST_RUN == 'r3':
-        yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan1_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'fan 1 should power on'),
-            self.Validation(model_var = 'self.model.fan2_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'NOT_EQUAL', 
-                            description = 'fan 2 should not power on'),
-            self.Validation(model_var = 'self.model.eicas', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'Both fans are Available EICAS message'))
+    elif not self.fan1_fault and self.fan2_fault:
+        f1_pass    = 'EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 3
+        e_hi       = 3
+        e_msg      = 'only fan 1 is available'
+        assign_var = 'self.model.fan1_power_status'
 
+    elif self.fan1_fault and self.fan2_fault:
+        f1_pass    = 'NOT_EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should not power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 3
+        e_hi       = 3
+        e_msg      = 'no fans available'
+        assign_var = None
+        
+    yield scheduler.Parallel(
+        self.Validation(model_var = 'self.model.fan1_power_enable', 
+                        hi = f1_hi, 
+                        lo = f1_lo, 
+                        timeout = 1000, 
+                        duration = 0, 
+                        pass_criteria = f1_pass, 
+                        description = f1_msg),
+        self.Validation(model_var = 'self.model.fan2_power_enable', 
+                        hi = f2_hi, 
+                        lo = f2_lo, 
+                        timeout = 1000, 
+                        duration = 0, 
+                        pass_criteria = f2_pass, 
+                        description = f2_msg))
 
-    if self.TEST_RUN == 'r4':
-        yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan2_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'NOT_EQUAL', 
-                            description = 'fan 2 should not power on'),
-            self.Validation(model_var = 'self.model.fan1_power_enable', 
-                            hi = 1, 
-                            lo = 1, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'NOT_EQUAL', 
-                            description = 'fan 1 should not power on'),
-            self.Validation(model_var = 'self.model.eicas', 
-                            hi = 0, 
-                            lo = 0, 
-                            timeout = 1000, 
-                            duration = 0, 
-                            pass_criteria = 'EQUAL', 
-                            description = 'No Fans Available EICAS message'))
+    if assign_var:
+        self.Assignment(model_var = assign_var, value = 1)
+
+    self.Validation(model_var = 'self.model.eicas',
+                    hi = e_hi, 
+                    lo = e_lo, 
+                    timeout = 1000, 
+                    duration = 0, 
+                    pass_criteria = e_pass, 
+                    description = e_msg)
 
