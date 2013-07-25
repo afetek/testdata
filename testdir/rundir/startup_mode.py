@@ -17,7 +17,7 @@ def RunScript(self):
     
     self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
-    if not self.fan1_fault and not self.fan2_fault:
+    if self.TEST_RUN == 'r1':
         yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
@@ -41,7 +41,7 @@ def RunScript(self):
                             pass_criteria = 'EQUAL', 
                             description = 'Both fans are Available EICAS message'))
 
-    if self.fan1_fault and not self.fan2_fault:
+    if self.TEST_RUN == 'r2':
         yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
@@ -63,9 +63,9 @@ def RunScript(self):
                             timeout = 1000, 
                             duration = 0, 
                             pass_criteria = 'EQUAL', 
-                            description = 'No Fans Available EICAS message'))
+                            description = 'Fan 2 is available EICAS message'))
 
-    if not self.fan1_fault and self.fan2_fault:
+    if self.TEST_RUN == 'r3':
         yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
@@ -90,7 +90,7 @@ def RunScript(self):
                             description = 'Both fans are Available EICAS message'))
 
 
-    if self.fan1_fault and self.fan2_fault:
+    if self.TEST_RUN == 'r4':
         yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
