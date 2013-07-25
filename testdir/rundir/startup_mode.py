@@ -99,7 +99,7 @@ def RunScript(self):
                             duration = 0, 
                             pass_criteria = 'NOT_EQUAL', 
                             description = 'fan 2 should not power on'),
-            self.Validation(model_var = 'self.model.fan1_power_enbale', 
+            self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
