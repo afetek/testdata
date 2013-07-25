@@ -3,7 +3,8 @@ from rttlib import scheduler
 enableCapturing   = True
 enableMaintenance = True
 enableEventCheck  = True
-testName = ''
+test_name         = 'Powerup Mode Test'
+requirements      = '5,6,7,8'
 
 def RunScript(self):
 
