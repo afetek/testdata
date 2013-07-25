@@ -39,8 +39,8 @@ def RunScript(self):
         f2_hi      = 1
         f2_msg     = 'fan 2 should power on'
         e_pass     = 'EQUAL'
-        e_lo       = 3
-        e_hi       = 3
+        e_lo       = 2
+        e_hi       = 2
         e_msg      = 'only fan 2 is available'
         assign_var = 'self.model.fan2_power_status'
 
@@ -54,8 +54,8 @@ def RunScript(self):
         f2_hi      = 1
         f2_msg     = 'fan 2 should not power on'
         e_pass     = 'EQUAL'
-        e_lo       = 3
-        e_hi       = 3
+        e_lo       = 1
+        e_hi       = 1
         e_msg      = 'only fan 1 is available'
         assign_var = 'self.model.fan1_power_status'
 
@@ -69,8 +69,8 @@ def RunScript(self):
         f2_hi      = 1
         f2_msg     = 'fan 2 should not power on'
         e_pass     = 'EQUAL'
-        e_lo       = 3
-        e_hi       = 3
+        e_lo       = 0
+        e_hi       = 0
         e_msg      = 'no fans available'
         assign_var = None
         
