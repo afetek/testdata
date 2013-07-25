@@ -10,6 +10,9 @@ def RunScript(self):
     self.Print("Powerup Test Script")
     self.Print("Testing Requirements: Statrup Mode - 5 through 8")
 
+    print str(type(self.fan1_fault))
+    print str(type(self.fan2_fault))
+
     if self.fan1_fault:
         self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1)
     if self.fan2_fault:
