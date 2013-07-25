@@ -19,14 +19,14 @@ def RunScript(self):
 
     if not self.fan1_fault and not self.fan2_fault:
         yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan1_power_enbale', 
+            self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
                             duration = 0, 
                             pass_criteria = 'EQUAL', 
                             description = 'fan 1 should power on'),
-            self.Validation(model_var = 'self.model.fan2_power_enbale', 
+            self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
@@ -43,14 +43,14 @@ def RunScript(self):
 
     if self.fan1_fault and not self.fan2_fault:
         yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan2_power_enbale', 
+            self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
                             duration = 0, 
                             pass_criteria = 'EQUAL', 
                             description = 'fan 2 should power on'),
-            self.Validation(model_var = 'self.model.fan1_power_enbale', 
+            self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
@@ -67,14 +67,14 @@ def RunScript(self):
 
     if not self.fan1_fault and self.fan2_fault:
         yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan1_power_enbale', 
+            self.Validation(model_var = 'self.model.fan1_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
                             duration = 0, 
                             pass_criteria = 'EQUAL', 
                             description = 'fan 1 should power on'),
-            self.Validation(model_var = 'self.model.fan2_power_enbale', 
+            self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
@@ -92,7 +92,7 @@ def RunScript(self):
 
     if self.fan1_fault and self.fan2_fault:
         yield scheduler.Parallel(
-            self.Validation(model_var = 'self.model.fan2_power_enbale', 
+            self.Validation(model_var = 'self.model.fan2_power_enable', 
                             hi = 1, 
                             lo = 1, 
                             timeout = 1000, 
