@@ -15,14 +15,10 @@ def RunScript(self):
     if self.fan2_fault:
         self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1)
     
-    self.Print("Waitng Until Ready ...")
-    yield self.Prompt()
-    self.Print("... Ok")
-
     self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
     if not self.fan1_fault and not self.fan2_fault:
-        scheduler.Parallel(
+        yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan1_power_enbale', 
                             hi = 1, 
                             lo = 1, 
@@ -46,7 +42,7 @@ def RunScript(self):
                             description = 'Both fans are Available EICAS message'))
 
     if self.fan1_fault and not self.fan2_fault:
-        scheduler.Parallel(
+        yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan2_power_enbale', 
                             hi = 1, 
                             lo = 1, 
@@ -70,7 +66,7 @@ def RunScript(self):
                             description = 'No Fans Available EICAS message'))
 
     if not self.fan1_fault and self.fan2_fault:
-        scheduler.Parallel(
+        yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan1_power_enbale', 
                             hi = 1, 
                             lo = 1, 
@@ -95,7 +91,7 @@ def RunScript(self):
 
 
     if self.fan1_fault and self.fan2_fault:
-        scheduler.Parallel(
+        yield scheduler.Parallel(
             self.Validation(model_var = 'self.model.fan2_power_enbale', 
                             hi = 1, 
                             lo = 1, 
@@ -118,4 +114,3 @@ def RunScript(self):
                             pass_criteria = 'EQUAL', 
                             description = 'No Fans Available EICAS message'))
 
-    yield self.Prompt()
