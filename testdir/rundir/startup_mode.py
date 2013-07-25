@@ -93,11 +93,11 @@ def RunScript(self):
     if assign_var:
         self.Assignment(model_var = assign_var, value = 1)
 
-    self.Validation(model_var = 'self.model.eicas',
-                    hi = e_hi, 
-                    lo = e_lo, 
-                    timeout = 1000, 
-                    duration = 0, 
-                    pass_criteria = e_pass, 
-                    description = e_msg)
+    yield self.Validation(model_var = 'self.model.eicas',
+                          hi = e_hi, 
+                          lo = e_lo, 
+                          timeout = 1000, 
+                          duration = 0, 
+                          pass_criteria = e_pass, 
+                          description = e_msg)
 
