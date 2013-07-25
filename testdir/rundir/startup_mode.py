@@ -3,7 +3,7 @@ from rttlib import scheduler
 enableCapturing   = True
 enableMaintenance = True
 enableEventCheck  = True
-testName = 'script1'
+testName = __name__
 
 def RunScript(self):
 
