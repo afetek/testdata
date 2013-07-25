@@ -6,8 +6,9 @@ enableEventCheck  = True
 testName = 'script1'
 
 def RunScript(self):
-    self.Print("signal1: " + str(self.s1))
-    self.Print("signal2: " + str(self.s2))
+
+    self.Print("Powerup Test Script")
+    self.Print("Testing Requirements: Statrup Mode - 5 through 8")
 
     if self.fan1_fault:
         self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1)
