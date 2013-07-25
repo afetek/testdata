@@ -27,7 +27,8 @@ def RunScript(self):
         e_lo       = 3
         e_hi       = 3
         e_msg      = 'both fans are available'
-        assign_var = 'self.model.fan1_power_status'
+        fan_pwr    = 'self.model.fan1_power_status'
+        fan_spd    = 'self.model.fan1_high_low'
 
     elif self.fan1_fault and not self.fan2_fault:
         f1_pass    = 'NOT_EQUAL'
@@ -42,7 +43,8 @@ def RunScript(self):
         e_lo       = 2
         e_hi       = 2
         e_msg      = 'only fan 2 is available'
-        assign_var = 'self.model.fan2_power_status'
+        fan_pwr    = 'self.model.fan2_power_status'
+        fan_spd    = 'self.model.fan2_high_low'
 
     elif not self.fan1_fault and self.fan2_fault:
         f1_pass    = 'EQUAL'
@@ -57,7 +59,8 @@ def RunScript(self):
         e_lo       = 1
         e_hi       = 1
         e_msg      = 'only fan 1 is available'
-        assign_var = 'self.model.fan1_power_status'
+        fan_pwr    = 'self.model.fan1_power_status'
+        fan_spd    = 'self.model.fan1_high_low'
 
     elif self.fan1_fault and self.fan2_fault:
         f1_pass    = 'NOT_EQUAL'
@@ -72,7 +75,8 @@ def RunScript(self):
         e_lo       = 0
         e_hi       = 0
         e_msg      = 'no fans available'
-        assign_var = None
+        fan_pwr    = None
+        fan_spd    = None
         
     yield scheduler.Parallel(
         self.Validation(model_var = 'self.model.fan1_power_enable', 
@@ -90,8 +94,8 @@ def RunScript(self):
                         pass_criteria = f2_pass, 
                         description = f2_msg))
 
-    if assign_var:
-        self.Assignment(model_var = assign_var, value = 1)
+    if fan_pwr:
+        self.Assignment(model_var = fan_pwr, value = 1)
 
     yield self.Validation(model_var = 'self.model.eicas',
                           hi = e_hi, 
@@ -101,3 +105,11 @@ def RunScript(self):
                           pass_criteria = e_pass, 
                           description = e_msg)
 
+    if fan_spd:
+        yield self.Validation(model_var = fan_spd,
+                              hi = 0, 
+                              lo = 0, 
+                              timeout = 1000, 
+                              duration = 0, 
+                              pass_criteria = 'EQUAL', 
+                              description = 'low fan speed')
