@@ -34,6 +34,7 @@ def RunScript(self):
         e_msg      = 'both fans are available'
         fan_pwr    = 'self.model.fan1_power_status'
         fan_spd    = 'self.model.fan1_high_low'
+        airflow    = 'self.model.fan1_airflow_sensor_fb'
 
     elif self.fan1_fault and not self.fan2_fault:
         f1_pass    = 'NOT_EQUAL'
@@ -50,6 +51,7 @@ def RunScript(self):
         e_msg      = 'only fan 2 is available'
         fan_pwr    = 'self.model.fan2_power_status'
         fan_spd    = 'self.model.fan2_high_low'
+        airflow    = 'self.model.fan2_airflow_sensor_fb'
 
     elif not self.fan1_fault and self.fan2_fault:
         f1_pass    = 'EQUAL'
@@ -66,6 +68,7 @@ def RunScript(self):
         e_msg      = 'only fan 1 is available'
         fan_pwr    = 'self.model.fan1_power_status'
         fan_spd    = 'self.model.fan1_high_low'
+        airflow    = 'self.model.fan1_airflow_sensor_fb'
 
     elif self.fan1_fault and self.fan2_fault:
         f1_pass    = 'NOT_EQUAL'
@@ -100,6 +103,7 @@ def RunScript(self):
                         description = f2_msg))
 
     if fan_pwr:
+        self.Assignment(model_var = airflow, value = 3)
         self.Assignment(model_var = fan_pwr, value = 1)
 
     yield self.Validation(model_var = 'self.model.eicas',
