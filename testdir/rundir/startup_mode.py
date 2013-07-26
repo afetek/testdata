@@ -15,7 +15,7 @@ def RunScript(self):
         self.Assignment(model_var = 'self.model.enableCanTx', value = 0)
         yield self.Prompt("Power OFF")
         yield self.Prompt("Power ON")
-        yield self.model.Delay(10000)
+        yield self.model.Delay(5000)
     else:
         self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
