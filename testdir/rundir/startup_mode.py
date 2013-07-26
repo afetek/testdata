@@ -14,7 +14,7 @@ def RunScript(self):
 
     if self.powerup:
         yield self.Prompt("Turn power off to controller board")
-        yeild self.model.Delay(5000)
+        yield self.model.Delay(5000)
         yield self.Prompt("Turn power on to controller board")
 
     if not self.fan1_fault and not self.fan2_fault:
