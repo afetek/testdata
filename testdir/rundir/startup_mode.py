@@ -4,16 +4,18 @@ enableCapturing   = True
 enableMaintenance = True
 enableEventCheck  = True
 test_name         = 'Powerup Mode'
-requirements      = '5,6,7,8'
+requirements      = '1,5,6,7,8'
 
 def RunScript(self):
-
-    self.Print("Powerup Test Script")
-    self.Print("Testing Requirements: Statrup Mode - 5 through 8")
 
     self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1 if self.fan1_fault else 0)
     self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1 if self.fan2_fault else 0)
     self.Assignment(model_var = 'self.model.powerECU', value = 1)
+
+    if self.powerup:
+        yield self.Prompt("Turn power off to controller board")
+        yeild self.model.Delay(5000)
+        yield self.Prompt("Turn power on to controller board")
 
     if not self.fan1_fault and not self.fan2_fault:
         f1_pass    = 'EQUAL'
