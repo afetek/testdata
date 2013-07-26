@@ -13,9 +13,9 @@ def RunScript(self):
     self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
     if self.powerup:
-        yield self.Prompt("Turn power off to controller board")
+        yield self.Prompt("Power OFF")
         yield self.model.Delay(5000)
-        yield self.Prompt("Turn power on to controller board")
+        yield self.Prompt("Power ON")
 
     if not self.fan1_fault and not self.fan2_fault:
         f1_pass    = 'EQUAL'
