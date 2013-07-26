@@ -10,12 +10,14 @@ def RunScript(self):
 
     self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1 if self.fan1_fault else 0)
     self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1 if self.fan2_fault else 0)
-    self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
     if self.powerup:
+        self.Assignment(model_var = 'self.model.enableCanTx', value = 0)
         yield self.Prompt("Power OFF")
-        yield self.model.Delay(5000)
         yield self.Prompt("Power ON")
+        yield self.model.Delay(10000)
+    else:
+        self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
     if not self.fan1_fault and not self.fan2_fault:
         f1_pass    = 'EQUAL'
