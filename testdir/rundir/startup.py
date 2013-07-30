@@ -3,7 +3,7 @@ from rttlib import scheduler
 ENABLE_CAPTURING   = True
 ENABLE_MAINTENANCE = True
 ENABLE_EVENTCHECK  = True
-TEST_NAME         = 'Startup Mode'
+TEST_NAME         = 'STARTUP'
 REQUIREMENTS      = '1,5,6,7,8'
 
 def RunScript(self):
