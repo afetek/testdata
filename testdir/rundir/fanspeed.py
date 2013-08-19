@@ -8,37 +8,117 @@ REQUIREMENTS      = '16, 17, 18, 19, 20'
 
 def RunScript(self):
 
-    self.Assignment(model_var = 'self.model.fan1FaultRead', value = 0 if self.fan == 'fan1' else 1)
-    fan_on                    = 'self.model.%s_power_enable'      % self.fan
-    fan_pwr                   = 'self.model.%s_power_status'      % self.fan
-    airflow                   = 'self.model.%s_airflow_sensor_fb' % self.fan
-    fan_speed                 = 'self.model.%s_high_low'          % self.fan
+    self.Assignment(model_var = 'self.model.fan1FaultRead', value = 1 if self.fan1_fault else 0)
+    self.Assignment(model_var = 'self.model.fan2FaultRead', value = 1 if self.fan2_fault else 0)
 
+    if self.powerup:
+        self.Assignment(model_var = 'self.model.enableCanTx', value = 0)
+        yield self.Prompt("Power OFF")
+        yield self.Prompt("Power ON")
+        yield self.model.Delay(5000)
+    else:
+        self.Assignment(model_var = 'self.model.powerECU', value = 1)
 
-    # Turn on the ECS
-    self.Assignment(model_var = 'self.model.powerECU', value = 1)
+    if not self.fan1_fault and not self.fan2_fault:
+        f1_pass    = 'EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 3
+        e_hi       = 3
+        e_msg      = 'both fans are available'
+        fan_pwr    = 'self.model.fan1_power_status'
+        fan_spd    = 'self.model.fan1_high_low'
+        airflow    = 'self.model.fan1_airflow_sensor_fb'
 
-    # wait one second
-    yield self.model.Delay(1000) 
+    elif self.fan1_fault and not self.fan2_fault:
+        f1_pass    = 'NOT_EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should not power on'
+        f2_pass    = 'EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 2
+        e_hi       = 2
+        e_msg      = 'only fan 2 is available'
+        fan_pwr    = 'self.model.fan2_power_status'
+        fan_spd    = 'self.model.fan2_high_low'
+        airflow    = 'self.model.fan2_airflow_sensor_fb'
 
-    self.Assignment(model_var = airflow, value = 3)
-    self.Assignment(model_var = fan_pwr, value = 1)
+    elif not self.fan1_fault and self.fan2_fault:
+        f1_pass    = 'EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 1
+        e_hi       = 1
+        e_msg      = 'only fan 1 is available'
+        fan_pwr    = 'self.model.fan1_power_status'
+        fan_spd    = 'self.model.fan1_high_low'
+        airflow    = 'self.model.fan1_airflow_sensor_fb'
 
+    elif self.fan1_fault and self.fan2_fault:
+        f1_pass    = 'NOT_EQUAL'
+        f1_lo      = 1
+        f1_hi      = 1
+        f1_msg     = 'fan 1 should not power on'
+        f2_pass    = 'NOT_EQUAL'
+        f2_lo      = 1
+        f2_hi      = 1
+        f2_msg     = 'fan 2 should not power on'
+        e_pass     = 'EQUAL'
+        e_lo       = 0
+        e_hi       = 0
+        e_msg      = 'no fans available'
+        fan_pwr    = None
+        fan_spd    = None
+        
     yield scheduler.Parallel(
-        self.Validation(model_var = fan_on, 
-                        hi = 1, 
-                        lo = 1, 
+        self.Validation(model_var = 'self.model.fan1_power_enable', 
+                        hi = f1_hi, 
+                        lo = f1_lo, 
                         timeout = 1000, 
                         duration = 0, 
-                        pass_criteria = "EQUAL", 
-                        description = "%s Should be ON" % self.fan.upper()),
-        self.Validation(model_var = fan_speed,
-                        hi = 0, 
-                        lo = 0, 
+                        pass_criteria = f1_pass, 
+                        description = f1_msg),
+        self.Validation(model_var = 'self.model.fan2_power_enable', 
+                        hi = f2_hi, 
+                        lo = f2_lo, 
                         timeout = 1000, 
                         duration = 0, 
-                        pass_criteria = "EQUAL", 
-                        description = "%s Should be Low Speed" % sefl.fan.upper()))
+                        pass_criteria = f2_pass, 
+                        description = f2_msg))
 
-    yield self.model.Delay(1000)
+    if fan_pwr:
+        self.Assignment(model_var = airflow, value = 3)
+        self.Assignment(model_var = fan_pwr, value = 1)
 
+    yield self.Validation(model_var = 'self.model.eicas',
+                          hi = e_hi, 
+                          lo = e_lo, 
+                          timeout = 1000, 
+                          duration = 0, 
+                          pass_criteria = e_pass, 
+                          description = e_msg)
+
+    if fan_spd:
+        yield self.Validation(model_var = fan_spd,
+                              hi = 0, 
+                              lo = 0, 
+                              timeout = 1000, 
+                              duration = 0, 
+                              pass_criteria = 'EQUAL', 
+                              description = 'low fan speed')
